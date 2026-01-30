@@ -1,75 +1,30 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Phishing URL Detection Tool</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
-</head>
 <body>
+<div class="container">
+    <h1>🔐 Phishing URL Detection</h1>
+    <p class="subtitle">Analyze URLs for phishing & security risks</p>
 
-<div class="app">
+    <form method="post" action="/scan">
+        <input type="text" name="url" placeholder="https://example.com" required>
+        <button type="submit">Scan</button>
+    </form>
 
-    <header>
-        <h1>🔐 Phishing URL Detection Tool</h1>
-        <p class="subtitle">Analyze URLs for phishing & security risks</p>
-    </header>
+    <!-- Result block (shown after scan) -->
+    <div th:if="${result}"
+         class="result"
+         th:classappend="${result.phishing} ? 'phishing' : 'safe'">
 
-    <section class="card">
+        <h3 th:text="${result.phishing} ? '⚠️ Phishing Detected' : '✅ Safe Website'"></h3>
 
-        <!-- Scan Form -->
-        <form method="post" action="/scan" class="scan-form">
-            <input
-                    type="text"
-                    name="url"
-                    th:value="${url}"
-                    placeholder="https://example.com"
-                    required
-            />
-            <button type="submit">Scan URL</button>
-        </form>
+        <p><strong>Risk Score:</strong> <span th:text="${result.riskScore} + '%'"></span></p>
 
-        <!-- Error -->
-        <div class="error" th:if="${error}" th:text="${error}"></div>
-
-        <!-- Result -->
-        <div class="result" th:if="${result != null}">
-
-            <!-- Verdict Badge -->
-            <div class="verdict"
-                 th:classappend="${result.verdict.toLowerCase()}">
-                <span th:text="${result.verdict}"></span>
-            </div>
-
-            <!-- Risk Meter -->
-            <div class="risk">
-                <div class="risk-label">
-                    Risk Score: <strong th:text="${result.riskScore} + '%'"></strong>
-                </div>
-                <div class="risk-bar">
-                    <div class="risk-fill"
-                         th:style="'width:' + ${result.riskScore} + '%'">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reasons -->
-            <div class="reasons">
-                <h3>Detected Issues</h3>
-                <ul>
-                    <li th:each="reason : ${result.reasons}"
-                        th:text="${reason}"></li>
-                </ul>
-            </div>
-
-        </div>
-
-    </section>
+        <ul>
+            <li th:each="reason : ${result.reasons}"
+                th:text="${reason}"></li>
+        </ul>
+    </div>
 
     <footer>
-        <p>Built with Spring Boot • Security Analysis Tool</p>
+        Built with Spring Boot • Security Analysis Tool
     </footer>
-
 </div>
-
 </body>
-</html>

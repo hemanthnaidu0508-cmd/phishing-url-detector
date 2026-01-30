@@ -1,149 +1,121 @@
 /* Reset */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 /* Background */
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #e5e7eb;
     min-height: 100vh;
-}
-
-/* App Layout */
-.app {
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 20px;
-}
-
-/* Header */
-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-header h1 {
-    font-size: 2rem;
-}
-
-.subtitle {
-    color: #9ca3af;
-    margin-top: 6px;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e5e7eb;
 }
 
 /* Card */
-.card {
-    background: #111827;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+.container {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 32px;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.8s ease;
+}
+
+/* Title */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #94a3b8;
+    margin-bottom: 24px;
 }
 
 /* Form */
-.scan-form {
+form {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
 }
 
-.scan-form input {
+input[type="text"] {
     flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #020617;
+    color: #e5e7eb;
     outline: none;
-    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
 }
 
-.scan-form button {
-    padding: 12px 18px;
-    background: #38bdf8;
+input::placeholder {
+    color: #64748b;
+}
+
+input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+}
+
+/* Button */
+button {
+    padding: 14px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    color: white;
     font-weight: 600;
     cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.scan-form button:hover {
-    background: #0ea5e9;
-}
-
-/* Error */
-.error {
-    background: #7f1d1d;
-    color: #fecaca;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 15px;
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
 }
 
 /* Result */
 .result {
-    margin-top: 20px;
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #020617;
+    border: 1px solid #334155;
+    animation: fadeIn 0.6s ease;
 }
 
-/* Verdict Badge */
-.verdict {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
+.result.safe {
+    border-left: 6px solid #22c55e;
 }
 
-.verdict.safe {
-    background: #14532d;
-    color: #86efac;
+.result.phishing {
+    border-left: 6px solid #ef4444;
 }
 
-.verdict.suspicious {
-    background: #78350f;
-    color: #fde68a;
-}
-
-.verdict.phishing {
-    background: #7f1d1d;
-    color: #fecaca;
-}
-
-/* Risk Meter */
-.risk-label {
-    margin-bottom: 6px;
-}
-
-.risk-bar {
-    background: #1f2933;
-    border-radius: 10px;
-    height: 14px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-.risk-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #22c55e, #eab308, #dc2626);
-    transition: width 0.8s ease;
+.result h3 {
+    margin-bottom: 8px;
 }
 
 /* Reasons */
-.reasons h3 {
-    margin-bottom: 8px;
-    font-size: 1rem;
+ul {
+    margin-top: 10px;
+    padding-left: 20px;
 }
 
-.reasons ul {
-    padding-left: 18px;
-}
-
-.reasons li {
+li {
     margin-bottom: 6px;
-    color: #d1d5db;
+    color: #cbd5f5;
 }
 
 /* Footer */
@@ -151,5 +123,26 @@ footer {
     text-align: center;
     margin-top: 20px;
     font-size: 0.8rem;
-    color: #9ca3af;
+    color: #94a3b8;
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
