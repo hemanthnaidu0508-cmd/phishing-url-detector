@@ -19,11 +19,27 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // ✅ BYPASS STATIC RESOURCES (VERY IMPORTANT)
+        if (path.startsWith("/favicon")
+                || path.startsWith("/style.css")
+                || path.startsWith("/static")
+                || path.endsWith(".png")
+                || path.endsWith(".ico")
+                || path.endsWith(".css")
+                || path.endsWith(".js")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 🔒 existing security headers logic BELOW
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "DENY");
         response.setHeader("X-XSS-Protection", "1; mode=block");
-        response.setHeader("Referrer-Policy", "no-referrer");
 
         filterChain.doFilter(request, response);
     }
+
 }
