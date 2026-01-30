@@ -38,7 +38,7 @@
     </main>
 
     <footer class="footer">
-        Built with <strong>Spring Boot</strong> • Security Analysis Tool
+        Built with <strong>Spring Boot</strong> • Cyber Security Project
     </footer>
 
 </div>
@@ -67,29 +67,35 @@
             const data = await response.json();
             loading.classList.add("hidden");
 
-            if (response.ok) {
-                result.innerHTML = `
-                    <div class="result ${data.riskLevel === 'SAFE' ? 'safe' : 'phishing'}">
-                        <h3>✅ Scan Result</h3>
-                        <p><strong>Risk:</strong> ${data.riskLevel}</p>
-                        <p>${data.message}</p>
-                    </div>
-                `;
-            } else {
-                result.innerHTML = `
-                    <div class="result phishing">
-                        <h3>❌ Error</h3>
-                        <p>${data.message || "Something went wrong"}</p>
-                    </div>
-                `;
+            if (!response.ok) {
+                throw new Error(data.message || "Scan failed");
             }
+
+            const verdict = data.verdict;       // SAFE / PHISHING
+            const score = data.riskScore;       // number
+            const reasons = data.reasons || []; // list
+
+            result.innerHTML = `
+                <div class="result ${verdict === 'SAFE' ? 'safe' : 'phishing'}">
+                    <h3>🔍 Scan Result</h3>
+
+                    <p><strong>Verdict:</strong> ${verdict}</p>
+                    <p><strong>Risk Score:</strong> ${score} / 100</p>
+
+                    ${
+                reasons.length > 0
+                    ? `<ul>${reasons.map(r => `<li>${r}</li>`).join("")}</ul>`
+                    : `<p>No detailed reasons available.</p>`
+            }
+                </div>
+            `;
 
         } catch (err) {
             loading.classList.add("hidden");
             result.innerHTML = `
                 <div class="result phishing">
-                    <h3>❌ Server Error</h3>
-                    <p>Please try again later</p>
+                    <h3>❌ Error</h3>
+                    <p>${err.message}</p>
                 </div>
             `;
         }
