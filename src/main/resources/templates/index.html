@@ -1,30 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phishing URL Detection Tool</title>
+
+    <!-- IMPORTANT: Correct Spring Boot CSS path -->
+    <link rel="stylesheet" href="/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 <body>
-<div class="container">
-    <h1>🔐 Phishing URL Detection</h1>
-    <p class="subtitle">Analyze URLs for phishing & security risks</p>
 
-    <form method="post" action="/scan">
-        <input type="text" name="url" placeholder="https://example.com" required>
-        <button type="submit">Scan</button>
-    </form>
+<div class="app-container">
 
-    <!-- Result block (shown after scan) -->
-    <div th:if="${result}"
-         class="result"
-         th:classappend="${result.phishing} ? 'phishing' : 'safe'">
+    <header class="header">
+        <h1>🔐 Phishing URL Detection</h1>
+        <p class="subtitle">Analyze URLs for phishing & security risks</p>
+    </header>
 
-        <h3 th:text="${result.phishing} ? '⚠️ Phishing Detected' : '✅ Safe Website'"></h3>
+    <main class="card">
+        <form id="scanForm">
+            <input
+                    type="url"
+                    id="urlInput"
+                    placeholder="https://example.com"
+                    required
+            />
+            <button type="submit">
+                🚀 Scan URL
+            </button>
+        </form>
 
-        <p><strong>Risk Score:</strong> <span th:text="${result.riskScore} + '%'"></span></p>
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Scanning URL...</p>
+        </div>
 
-        <ul>
-            <li th:each="reason : ${result.reasons}"
-                th:text="${reason}"></li>
-        </ul>
-    </div>
+        <div id="result"></div>
+    </main>
 
-    <footer>
-        Built with Spring Boot • Security Analysis Tool
+    <footer class="footer">
+        Built with <strong>Spring Boot</strong> • Security Analysis Tool
     </footer>
+
 </div>
+
+<script>
+    const form = document.getElementById("scanForm");
+    const loading = document.getElementById("loading");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const url = document.getElementById("urlInput").value;
+        result.innerHTML = "";
+        loading.classList.remove("hidden");
+
+        try {
+            const response = await fetch("/api/scan", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url })
+            });
+
+            const data = await response.json();
+            loading.classList.add("hidden");
+
+            if (response.ok) {
+                result.innerHTML = `
+                    <div class="result success">
+                        <h3>✅ Scan Result</h3>
+                        <p><strong>Risk:</strong> ${data.riskLevel}</p>
+                        <p>${data.message}</p>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Error</h3>
+                        <p>${data.message || "Something went wrong"}</p>
+                    </div>
+                `;
+            }
+
+        } catch (err) {
+            loading.classList.add("hidden");
+            result.innerHTML = `
+                <div class="result error">
+                    <h3>❌ Server Error</h3>
+                    <p>Please try again later</p>
+                </div>
+            `;
+        }
+    });
+</script>
+
 </body>
+</html>
